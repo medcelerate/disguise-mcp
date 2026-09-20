@@ -23,56 +23,30 @@ func targetFor(t *testing.T, srv *httptest.Server) Target {
 	return Target{Scheme: u.Scheme, Host: u.Hostname(), Port: port}
 }
 
-func TestPlayPostsCorrectRequest(t *testing.T) {
+func TestPostSendsBodyAndPath(t *testing.T) {
 	var gotPath string
 	var gotBody map[string]any
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotPath = r.URL.Path
 		body, _ := io.ReadAll(r.Body)
 		_ = json.Unmarshal(body, &gotBody)
-		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	}))
 	defer srv.Close()
 
 	c := NewClient(targetFor(t, srv), 5*time.Second)
-	raw, err := c.Play(context.Background(), []Ref{{Name: "Main"}})
+	raw, err := c.Post(context.Background(), "/api/session/transport/play", map[string]any{"transports": []any{map[string]any{"name": "Main"}}})
 	if err != nil {
-		t.Fatalf("play: %v", err)
+		t.Fatalf("post: %v", err)
 	}
 	if gotPath != "/api/session/transport/play" {
 		t.Fatalf("path = %q", gotPath)
 	}
-	transports, ok := gotBody["transports"].([]any)
-	if !ok || len(transports) != 1 {
-		t.Fatalf("transports payload wrong: %v", gotBody)
-	}
-	first := transports[0].(map[string]any)
-	if first["name"] != "Main" {
-		t.Fatalf("transport name = %v", first["name"])
+	if _, ok := gotBody["transports"]; !ok {
+		t.Fatalf("body missing transports: %v", gotBody)
 	}
 	if string(raw) != `{"status":"ok"}` {
 		t.Fatalf("unexpected response: %s", raw)
-	}
-}
-
-func TestGotoTimeBody(t *testing.T) {
-	var gotBody map[string]any
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		body, _ := io.ReadAll(r.Body)
-		_ = json.Unmarshal(body, &gotBody)
-		_, _ = w.Write([]byte(`{}`))
-	}))
-	defer srv.Close()
-
-	c := NewClient(targetFor(t, srv), 5*time.Second)
-	if _, err := c.GotoTime(context.Background(), Ref{Name: "Main"}, 12.5, "play"); err != nil {
-		t.Fatalf("gototime: %v", err)
-	}
-	arr := gotBody["transports"].([]any)
-	item := arr[0].(map[string]any)
-	if item["time"].(float64) != 12.5 || item["playmode"] != "play" {
-		t.Fatalf("gototime body wrong: %v", item)
 	}
 }
 
@@ -82,7 +56,7 @@ func TestErrorOnNon2xx(t *testing.T) {
 	}))
 	defer srv.Close()
 	c := NewClient(targetFor(t, srv), 5*time.Second)
-	if _, err := c.Play(context.Background(), []Ref{{Name: "x"}}); err == nil {
+	if _, err := c.Get(context.Background(), "/api/service/system/osinfo"); err == nil {
 		t.Fatal("expected error on 404")
 	}
 }

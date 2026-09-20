@@ -9,6 +9,11 @@ disguise:
   host: 127.0.0.1     # the disguise server; 127.0.0.1 if the bridge runs on it
   port: 80
   timeoutSeconds: 15
+  # Restrict which API sections are exposed as tools. Empty = all sections.
+  # Tags: Transport, Sequencing, Notes, Colour, Media, Project, System,
+  #       Failover, MixedReality, Quickcal, Omnical, RenderStream,
+  #       ShotRecorder, Status, Python, Sockpuppet.
+  # sections: [Transport, Sequencing, Notes, System]
 
 # How AI clients connect to the MCP side. transport: http | stdio | both.
 # HTTP is exposed on all interfaces by default so networked clients can reach

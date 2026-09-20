@@ -33,6 +33,9 @@ type DisguiseConfig struct {
 	Host           string `yaml:"host"`
 	Port           int    `yaml:"port"`
 	TimeoutSeconds int    `yaml:"timeoutSeconds"`
+	// Sections restricts which API sections (OpenAPI tags, e.g. Transport,
+	// Sequencing, Notes) are exposed as tools. Empty means all sections.
+	Sections []string `yaml:"sections"`
 }
 
 // MCPConfig selects how MCP clients connect.

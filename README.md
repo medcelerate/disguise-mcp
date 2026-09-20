@@ -105,25 +105,28 @@ apply immediately and are saved to the config file — the same setting the
 
 ## MCP tools
 
-**Control:** `disguise_status`, `disguise_set_target`, `disguise_system`,
-`disguise_project`, `disguise_raw` (any endpoint).
+The **entire** disguise Designer API is exposed. Tools are generated directly
+from disguise's official OpenAPI specs (bundled in the binary), so there is one
+tool per API operation — ~90 in total — across every section:
 
-**Transport reads:** `disguise_list_transports`, `disguise_active_transport`,
-`disguise_list_tracks`, `disguise_list_setlists`, `disguise_annotations`.
+- **Service:** System, Project, Media
+- **Session:** Transport, Sequencing, Notes, Colour, Failover, Mixed Reality,
+  OmniCal, QuickCal, RenderStream, Shot Recorder, Status, Python, Sockpuppet
 
-**Playback:** `disguise_play`, `disguise_stop`, `disguise_return_to_start`,
-`disguise_play_section`, `disguise_play_loop_section`.
+Each tool is named after its API operation (e.g. `disguise_transport_play`,
+`disguise_sequencing_firecue`, `disguise_system_getosinfo`), carries the spec's
+summary as its description, has an input schema derived from the endpoint's
+parameters/body, and is annotated read-only (GET) or write/destructive.
 
-**Navigation:** `disguise_goto_time`, `disguise_goto_timecode`,
-`disguise_goto_frame`, `disguise_goto_section`, `disguise_next_section`,
-`disguise_prev_section`, `disguise_goto_track`, `disguise_next_track`,
-`disguise_prev_track`.
+Plus three hand-written control tools: `disguise_status` (target + reachability),
+`disguise_set_target` (repoint), and `disguise_raw` (call any endpoint directly).
 
-**State:** `disguise_set_engaged`, `disguise_set_volume`,
-`disguise_set_brightness`.
+To reduce the tool count, restrict `disguise.sections` in the config to just the
+sections you use (see `config.example.yaml`).
 
-All tools carry titles and read-only / write annotations. Anything the dedicated
-tools don't cover is reachable through `disguise_raw`.
+> Coverage tracks the bundled specs; when disguise ships new API versions, drop
+> the updated `service.swagger.json` / `session.swagger.json` into
+> `internal/disguise/specs/` and rebuild.
 
 ---
 

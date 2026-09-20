@@ -25,20 +25,8 @@ func registerControlTools(s *mcp.Server, d *deps) {
 	}, d.setTarget)
 
 	mcp.AddTool(s, &mcp.Tool{
-		Name:        "disguise_system",
-		Description: "Get system information from the disguise server (Service API /api/service/system).",
-		Annotations: annRead("System info"),
-	}, d.system)
-
-	mcp.AddTool(s, &mcp.Tool{
-		Name:        "disguise_project",
-		Description: "Get project information from the disguise server (Service API /api/service/project).",
-		Annotations: annRead("Project info"),
-	}, d.project)
-
-	mcp.AddTool(s, &mcp.Tool{
 		Name:        "disguise_raw",
-		Description: "Make an arbitrary disguise Designer API request. Provide the HTTP method, the API path (e.g. /api/service/tasks), and an optional JSON body. Use for endpoints without a dedicated tool.",
+		Description: "Make an arbitrary disguise Designer API request. Provide the HTTP method, the API path (e.g. /api/service/system/osinfo), and an optional JSON body. Use for anything not covered by a dedicated tool.",
 		Annotations: annDestructive("Raw disguise API call"),
 	}, d.raw)
 }
@@ -77,24 +65,6 @@ func (d *deps) setTarget(ctx context.Context, _ *mcp.CallToolRequest, in setTarg
 	}
 	res := &mcp.CallToolResult{Content: []mcp.Content{&mcp.TextContent{Text: summary}}}
 	return res, st, nil
-}
-
-// --- service reads ---
-
-func (d *deps) system(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
-	raw, err := d.app.Client().Get(ctx, "/api/service/system")
-	if err != nil {
-		return nil, nil, err
-	}
-	return jsonResult("System info:", raw)
-}
-
-func (d *deps) project(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, any, error) {
-	raw, err := d.app.Client().Get(ctx, "/api/service/project")
-	if err != nil {
-		return nil, nil, err
-	}
-	return jsonResult("Project info:", raw)
 }
 
 // --- disguise_raw ---

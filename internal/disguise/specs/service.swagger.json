@@ -1,0 +1,1074 @@
+{
+  "swagger": "2.0", 
+  "info": {
+    "version": "2.0.0", 
+    "title": "d3 API"
+  }, 
+  "schemes": [
+    "http"
+  ], 
+  "consumes": [
+    "application/json"
+  ], 
+  "produces": [
+    "application/json"
+  ], 
+  "paths": {
+    "/media/list": {
+      "get": {
+        "summary": "Lists all files in the given directory (recursive).", 
+        "operationId": "Media_GetMedia", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/mediaGetMediaResponse"
+            }
+          }
+        }, 
+        "parameters": [
+          {
+            "name": "directory", 
+            "description": "(Required) Absolute path of the directory to search for files.", 
+            "in": "query", 
+            "required": false, 
+            "type": "string"
+          }
+        ], 
+        "tags": [
+          "Media"
+        ]
+      }
+    }, 
+    "/media/provision": {
+      "post": {
+        "summary": "Copies or downloads a file from a remote source to destinations on the local machine. Can be used to populate a Designer project with media files.", 
+        "operationId": "Media_ProvisionMedia", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/mediaProvisionMediaResponse"
+            }
+          }
+        }, 
+        "parameters": [
+          {
+            "name": "body", 
+            "in": "body", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/mediaProvisionMediaRequest"
+            }
+          }
+        ], 
+        "tags": [
+          "Media"
+        ]
+      }
+    }, 
+    "/media/remove": {
+      "post": {
+        "summary": "Removes a file or folder from the local machine. Useful for cleaning up assets or directories within a Designer project. When Designer is running, it can automatically unlock files in the active project before deleting them, ensuring a smooth and error-free cleanup process.", 
+        "operationId": "Media_Remove", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/d3apiTaskResponse"
+            }
+          }
+        }, 
+        "parameters": [
+          {
+            "name": "body", 
+            "in": "body", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/mediaRemoveFilesRequest"
+            }
+          }
+        ], 
+        "tags": [
+          "Media"
+        ]
+      }
+    }, 
+    "/project/forcequitlocalproject": {
+      "post": {
+        "summary": "Force quit an active disguise project", 
+        "operationId": "Project_ForceQuitLocalProject", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/d3apiEmptyResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "Project"
+        ]
+      }
+    }, 
+    "/project/quitlocalproject": {
+      "post": {
+        "summary": "Quit an active disguise project", 
+        "operationId": "Project_QuitLocalProject", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/d3apiEmptyResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "Project"
+        ]
+      }
+    }, 
+    "/project/restartlocalproject": {
+      "post": {
+        "summary": "Restart an active disguise project", 
+        "operationId": "Project_RestartLocalProject", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/d3apiEmptyResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "Project"
+        ]
+      }
+    }, 
+    "/project/startlocalproject": {
+      "post": {
+        "summary": "Start a disguise project using relative or absolute project path", 
+        "operationId": "Project_StartLocalProject", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/d3apiEmptyResponse"
+            }
+          }
+        }, 
+        "parameters": [
+          {
+            "name": "body", 
+            "in": "body", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/projectStartLocalProjectRequest"
+            }
+          }
+        ], 
+        "tags": [
+          "Project"
+        ]
+      }
+    }, 
+    "/system/detectsystems": {
+      "get": {
+        "summary": "List all remote machines and local machine system info", 
+        "operationId": "System_DetectSystems", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/systemDetectSystemsResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "System"
+        ]
+      }
+    }, 
+    "/system/gpuoutputs": {
+      "get": {
+        "summary": "List all GPU Output (on non d3 hardware this will return an empty list)", 
+        "operationId": "System_GetGPUOutputs", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/systemGetGPUOutputsReponse"
+            }
+          }
+        }, 
+        "tags": [
+          "System"
+        ]
+      }
+    }, 
+    "/system/networkadapters": {
+      "get": {
+        "summary": "List all Network Adapters", 
+        "operationId": "System_GetNetworkAdapters", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/systemGetNetworkAdaptersResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "System"
+        ]
+      }
+    }, 
+    "/system/osinfo": {
+      "get": {
+        "summary": "List OS information of all machines in the network", 
+        "operationId": "System_GetOsInfo", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/systemOsInfoResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "System"
+        ]
+      }
+    }, 
+    "/system/projects": {
+      "get": {
+        "summary": "List all projects", 
+        "operationId": "System_ListProjects", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/systemListProjectsResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "System"
+        ]
+      }
+    }, 
+    "/system/vfcs": {
+      "get": {
+        "summary": "List all VFC Cards (on non d3 hardware this will return an empty list)", 
+        "operationId": "System_GetVFCs", 
+        "responses": {
+          "200": {
+            "description": "A successful response.", 
+            "schema": {
+              "$ref": "#/definitions/systemGetVFCsResponse"
+            }
+          }
+        }, 
+        "tags": [
+          "System"
+        ]
+      }
+    }
+  }, 
+  "definitions": {
+    "d3apiTaskResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "taskUid": {
+          "type": "string", 
+          "title": "Task UID"
+        }
+      }, 
+      "title": "for handlers that just setup a task and let it do the job"
+    }, 
+    "mediaGetMediaResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus"
+        }, 
+        "files": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/mediaMediaFile"
+          }, 
+          "title": "The list of files found"
+        }
+      }
+    }, 
+    "mediaMediaFile": {
+      "type": "object", 
+      "properties": {
+        "path": {
+          "type": "string", 
+          "title": "Absolute path of file"
+        }, 
+        "size": {
+          "type": "string", 
+          "format": "uint64", 
+          "title": "Size of file in bytes"
+        }, 
+        "creationDate": {
+          "type": "string", 
+          "format": "uint64", 
+          "title": "UTC creation date in seconds since epoch 1st Jan 1970"
+        }, 
+        "lastWriteDate": {
+          "type": "string", 
+          "format": "uint64", 
+          "title": "UTC last write date in second since epoch 1st Jan 1970"
+        }
+      }
+    }, 
+    "mediaProvisionMediaError": {
+      "type": "object", 
+      "properties": {
+        "mediaPath": {
+          "type": "string"
+        }, 
+        "localPath": {
+          "type": "string"
+        }, 
+        "message": {
+          "type": "string"
+        }
+      }
+    }, 
+    "mediaProvisionMediaInfo": {
+      "type": "object", 
+      "properties": {
+        "taskUid": {
+          "type": "string", 
+          "title": "(Optional) Get UID of any task being performed"
+        }, 
+        "success": {
+          "type": "boolean", 
+          "title": "(Required) Indicates whether we successfully created a link or created a task"
+        }, 
+        "errorMessage": {
+          "$ref": "#/definitions/mediaProvisionMediaError", 
+          "title": "(Optional) Populated if success is false"
+        }, 
+        "taskType": {
+          "type": "string", 
+          "title": "(Optional) Get type of any task being performed"
+        }, 
+        "taskStatusStream": {
+          "type": "string", 
+          "title": "(Optional) Task status URL with query params"
+        }
+      }
+    }, 
+    "mediaProvisionMediaMap": {
+      "type": "object", 
+      "properties": {
+        "mediaPath": {
+          "type": "string", 
+          "title": "(Required) A remote path for the source media, used as a uid when uid parameter is not provided"
+        }, 
+        "uid": {
+          "type": "string", 
+          "title": "(Optional) Used to uniquely identify the file for reduced downloads and file transfers"
+        }, 
+        "localPath": {
+          "type": "array", 
+          "items": {
+            "type": "string"
+          }, 
+          "title": "(Required) Absolute path(s) to the desired local file(s)"
+        }
+      }
+    }, 
+    "mediaProvisionMediaRequest": {
+      "type": "object", 
+      "properties": {
+        "mediaPath": {
+          "type": "string", 
+          "title": "(Required) A remote path for the source media, used as a uid when uid parameter is not provided"
+        }, 
+        "localPath": {
+          "type": "array", 
+          "items": {
+            "type": "string"
+          }, 
+          "title": "(Required) Absolute path(s) to the desired local file(s)"
+        }, 
+        "uid": {
+          "type": "string", 
+          "title": "(Optional) Used to uniquely identify the file for reduced downloads and file transfers, not providing one will automatically generate a UID from mediapath"
+        }, 
+        "transfers": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/mediaProvisionMediaMap"
+          }, 
+          "title": "(Optional) A map of transfers to batch multiple requests into one"
+        }
+      }
+    }, 
+    "mediaProvisionMediaResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/mediaProvisionMediaInfo"
+          }
+        }
+      }
+    }, 
+    "mediaRemoveFilesRequest": {
+      "type": "object", 
+      "properties": {
+        "path": {
+          "type": "string", 
+          "description": "(Required) Absolute path to a file or a folder to remove from the current d3 projects folder."
+        }
+      }
+    }, 
+    "protobufAny": {
+      "type": "object", 
+      "properties": {
+        "type_url": {
+          "type": "string", 
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+        }, 
+        "value": {
+          "type": "string", 
+          "format": "byte", 
+          "description": "Must be a valid serialized protocol buffer of the above specified type."
+        }
+      }, 
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(&foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := &pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := &pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": <string>,\n      \"lastName\": <string>\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    }, 
+    "rpcStatus": {
+      "type": "object", 
+      "properties": {
+        "code": {
+          "type": "integer", 
+          "format": "int32", 
+          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+        }, 
+        "message": {
+          "type": "string", 
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
+        }, 
+        "details": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }, 
+          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."
+        }
+      }, 
+      "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https://cloud.google.com/apis/design/errors)."
+    }, 
+    "runtimeStreamError": {
+      "type": "object", 
+      "properties": {
+        "grpc_code": {
+          "type": "integer", 
+          "format": "int32"
+        }, 
+        "http_code": {
+          "type": "integer", 
+          "format": "int32"
+        }, 
+        "message": {
+          "type": "string"
+        }, 
+        "http_status": {
+          "type": "string"
+        }, 
+        "details": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }, 
+    "d3apiEmptyResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }
+      }
+    }, 
+    "projectStartLocalProjectRequest": {
+      "type": "object", 
+      "properties": {
+        "projectPath": {
+          "type": "string", 
+          "title": "Path to the Project\nPath is relative to the disguise projects folder set in d3Manager, ie: \"[project name]/[project file.d3]\""
+        }, 
+        "soloMode": {
+          "type": "boolean", 
+          "description": "Is machine is running in the solo mode.\nSolo mode means that project is running on a standalone machine (not director set), so not as part of a wider session."
+        }, 
+        "allowUpgrade": {
+          "type": "boolean", 
+          "description": "Allows to force upgrade the project.\nThis flag only applies if the project being run was created in an older version of D3 and needs to be updated."
+        }
+      }
+    }, 
+    "systemAPIBPModel": {
+      "type": "string", 
+      "enum": [
+        "BPModel_Unknown", 
+        "BPv1", 
+        "BPv2", 
+        "NoBP"
+      ], 
+      "default": "BPModel_Unknown"
+    }, 
+    "systemAPIColorFormat": {
+      "type": "string", 
+      "enum": [
+        "RGB", 
+        "YUV444", 
+        "YUV422", 
+        "YUV420", 
+        "ColorFormat_Unknown"
+      ], 
+      "default": "RGB"
+    }, 
+    "systemAPIVFCGeneration": {
+      "type": "string", 
+      "enum": [
+        "Generation_Unknown", 
+        "One", 
+        "Two", 
+        "None"
+      ], 
+      "default": "Generation_Unknown"
+    }, 
+    "systemD3VersionInfo": {
+      "type": "object", 
+      "properties": {
+        "major": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "Major Version"
+        }, 
+        "minor": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "Minor Version"
+        }, 
+        "hotfix": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "Patch Version (Double dot version)"
+        }, 
+        "revision": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "Revision from Mercurial"
+        }
+      }
+    }, 
+    "systemDetectSystemsResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemSystemInfo"
+          }, 
+          "title": "Information about all systems on the network"
+        }
+      }
+    }, 
+    "systemGPUOutputInfo": {
+      "type": "object", 
+      "properties": {
+        "gpuPort": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "GPU port"
+        }, 
+        "genlockState": {
+          "$ref": "#/definitions/systemGenlockState", 
+          "title": "Genlock state"
+        }, 
+        "emulated": {
+          "type": "boolean", 
+          "title": "Is passive dongle"
+        }, 
+        "resolution": {
+          "$ref": "#/definitions/systemResolution", 
+          "title": "Resolution"
+        }, 
+        "refreshRate": {
+          "type": "number", 
+          "format": "float", 
+          "title": "Refresh rate"
+        }, 
+        "bitDepth": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "Bit depth"
+        }, 
+        "colourFormat": {
+          "$ref": "#/definitions/systemAPIColorFormat", 
+          "title": "RGB/YUV444/YUV422/YUV420"
+        }
+      }
+    }, 
+    "systemGPUOutputsInfo": {
+      "type": "object", 
+      "properties": {
+        "hostname": {
+          "type": "string", 
+          "title": "Machine host name"
+        }, 
+        "genlock": {
+          "$ref": "#/definitions/systemGenlockInfo", 
+          "title": "Genlock"
+        }, 
+        "gpuOutputs": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemGPUOutputInfo"
+          }, 
+          "title": "Information about all gpu outputs in the system"
+        }
+      }
+    }, 
+    "systemGenlockInfo": {
+      "type": "object", 
+      "properties": {
+        "frequency": {
+          "type": "number", 
+          "format": "float", 
+          "title": "Genlock frequency"
+        }
+      }
+    }, 
+    "systemGenlockState": {
+      "type": "string", 
+      "enum": [
+        "FreeRun", 
+        "Internal", 
+        "External", 
+        "GenlockState_Unknown"
+      ], 
+      "default": "FreeRun"
+    }, 
+    "systemGetGPUOutputsReponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemGPUOutputsInfo"
+          }, 
+          "title": "Information about all gpu outputs on the network"
+        }
+      }
+    }, 
+    "systemGetNetworkAdaptersResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemNetAdapterInSystemsInfo"
+          }, 
+          "title": "Information about all net adapters on the network"
+        }
+      }
+    }, 
+    "systemGetVFCsResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemVFCInfo"
+          }, 
+          "title": "Information about all vfcs on the network"
+        }
+      }
+    }, 
+    "systemIPFamily": {
+      "type": "string", 
+      "enum": [
+        "IPv4", 
+        "IPv6"
+      ], 
+      "default": "IPv4"
+    }, 
+    "systemIpAddressInfo": {
+      "type": "object", 
+      "properties": {
+        "address": {
+          "type": "string", 
+          "title": "v4 address"
+        }, 
+        "subnet": {
+          "type": "string"
+        }, 
+        "family": {
+          "$ref": "#/definitions/systemIPFamily"
+        }, 
+        "gateway": {
+          "type": "string", 
+          "title": "Default gateway of the network adapter"
+        }
+      }
+    }, 
+    "systemListProjectsResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemProjectsInSystemInfo"
+          }, 
+          "title": "Information about all project on the network"
+        }
+      }
+    }, 
+    "systemNetAdapterInSystemsInfo": {
+      "type": "object", 
+      "properties": {
+        "hostname": {
+          "type": "string", 
+          "title": "Machine host name"
+        }, 
+        "netAdapters": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemNetAdapterInfo"
+          }, 
+          "title": "Information about all net adapters in the system"
+        }
+      }
+    }, 
+    "systemNetAdapterInfo": {
+      "type": "object", 
+      "properties": {
+        "name": {
+          "type": "string", 
+          "title": "Adapter name"
+        }, 
+        "mac": {
+          "type": "string", 
+          "title": "Mac-address"
+        }, 
+        "enabled": {
+          "type": "boolean", 
+          "title": "is adapter enabled"
+        }, 
+        "dhcp": {
+          "type": "boolean", 
+          "title": "is using DHCP"
+        }, 
+        "status": {
+          "$ref": "#/definitions/systemOperationalStatus", 
+          "title": "Operatioal Status of the Adapter (see operStatusString)"
+        }, 
+        "addresses": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemIpAddressInfo"
+          }, 
+          "title": "IP addresses"
+        }
+      }
+    }, 
+    "systemOperationalStatus": {
+      "type": "string", 
+      "enum": [
+        "OperationalStatus_Unknown", 
+        "Up", 
+        "Down", 
+        "Testing", 
+        "Dormant", 
+        "NotPresent", 
+        "LowerLayerDown"
+      ], 
+      "default": "OperationalStatus_Unknown"
+    }, 
+    "systemOsInfo": {
+      "type": "object", 
+      "properties": {
+        "hostname": {
+          "type": "string", 
+          "title": "Machine host name"
+        }, 
+        "windowsVersion": {
+          "type": "string", 
+          "title": "Installed Windows version"
+        }, 
+        "imageVersion": {
+          "type": "string", 
+          "title": "OS Image version"
+        }
+      }
+    }, 
+    "systemOsInfoResponse": {
+      "type": "object", 
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus", 
+          "title": "the execution status info"
+        }, 
+        "result": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemOsInfo"
+          }, 
+          "title": "Information about OS from all machines on the network"
+        }
+      }
+    }, 
+    "systemProjectInfo": {
+      "type": "object", 
+      "properties": {
+        "path": {
+          "type": "string", 
+          "title": "Full path of the project"
+        }, 
+        "lastModified": {
+          "type": "string", 
+          "title": "Last modified date of d3 project file e.g. 2019-09-07T15:50+00Z"
+        }, 
+        "version": {
+          "$ref": "#/definitions/systemD3VersionInfo", 
+          "title": "Project version"
+        }
+      }
+    }, 
+    "systemProjectsInSystemInfo": {
+      "type": "object", 
+      "properties": {
+        "hostname": {
+          "type": "string", 
+          "title": "Machine host name"
+        }, 
+        "lastProject": {
+          "type": "string", 
+          "title": "Last project name"
+        }, 
+        "projects": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemProjectInfo"
+          }, 
+          "title": "Information about all projects in the system"
+        }
+      }
+    }, 
+    "systemResolution": {
+      "type": "object", 
+      "properties": {
+        "width": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "width in pixel, can be 0"
+        }, 
+        "height": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "height in pixel, can be 0"
+        }
+      }
+    }, 
+    "systemSystemInfo": {
+      "type": "object", 
+      "properties": {
+        "hostname": {
+          "type": "string", 
+          "title": "Machine host name"
+        }, 
+        "type": {
+          "type": "string", 
+          "title": "Machine model"
+        }, 
+        "version": {
+          "$ref": "#/definitions/systemD3VersionInfo", 
+          "title": "Installed d3 version"
+        }, 
+        "runningProject": {
+          "type": "string", 
+          "title": "Currently running designer project"
+        }, 
+        "ipAddress": {
+          "type": "string", 
+          "title": "IP Address (IPV4)"
+        }, 
+        "isDesignerRunning": {
+          "type": "boolean", 
+          "title": "is d3.exe running"
+        }, 
+        "isServiceRunning": {
+          "type": "boolean", 
+          "title": "is d3service.exe running"
+        }, 
+        "isManagerRunning": {
+          "type": "boolean", 
+          "title": "is d3manager.exe running"
+        }, 
+        "isNotchHostRunning": {
+          "type": "boolean", 
+          "title": "is notch_host.exe running"
+        }
+      }
+    }, 
+    "systemVFCCard": {
+      "type": "object", 
+      "properties": {
+        "slot": {
+          "type": "integer", 
+          "format": "int64", 
+          "title": "Slot"
+        }, 
+        "type": {
+          "$ref": "#/definitions/systemVFCType", 
+          "title": "VFC card type"
+        }, 
+        "firmwareVersion": {
+          "type": "string", 
+          "title": "Firmware Version, can be 0.0.0"
+        }, 
+        "fpgaVersion": {
+          "type": "string", 
+          "title": "FPGA Version, can be 0.0.0"
+        }, 
+        "splitMode": {
+          "$ref": "#/definitions/systemVFCSplitMode", 
+          "title": "Split mode"
+        }, 
+        "generation": {
+          "$ref": "#/definitions/systemAPIVFCGeneration", 
+          "title": "Card Generation"
+        }, 
+        "ports": {
+          "$ref": "#/definitions/systemVFCPorts", 
+          "title": "VFC ports"
+        }
+      }
+    }, 
+    "systemVFCInfo": {
+      "type": "object", 
+      "properties": {
+        "hostname": {
+          "type": "string", 
+          "title": "Machine host name"
+        }, 
+        "backplaneVersion": {
+          "$ref": "#/definitions/systemAPIBPModel", 
+          "title": "Back plane version"
+        }, 
+        "cards": {
+          "type": "array", 
+          "items": {
+            "$ref": "#/definitions/systemVFCCard"
+          }, 
+          "title": "VFC Card"
+        }
+      }
+    }, 
+    "systemVFCPort": {
+      "type": "object", 
+      "properties": {
+        "resolution": {
+          "$ref": "#/definitions/systemResolution", 
+          "title": "VFC port resolution"
+        }, 
+        "RefreshRate": {
+          "type": "number", 
+          "format": "float", 
+          "title": "VFC port refresh rate, can be 0"
+        }, 
+        "name": {
+          "type": "string", 
+          "title": "VFC port name"
+        }
+      }
+    }, 
+    "systemVFCPorts": {
+      "type": "object", 
+      "properties": {
+        "a": {
+          "$ref": "#/definitions/systemVFCPort"
+        }, 
+        "b": {
+          "$ref": "#/definitions/systemVFCPort"
+        }, 
+        "c": {
+          "$ref": "#/definitions/systemVFCPort"
+        }, 
+        "d": {
+          "$ref": "#/definitions/systemVFCPort"
+        }
+      }
+    }, 
+    "systemVFCSplitMode": {
+      "type": "string", 
+      "enum": [
+        "SplitMode_Unknown", 
+        "Mirror", 
+        "Dual", 
+        "Quad", 
+        "Quad4K", 
+        "NoSwizzle"
+      ], 
+      "default": "SplitMode_Unknown"
+    }, 
+    "systemVFCType": {
+      "type": "string", 
+      "enum": [
+        "VFCType_Unknown", 
+        "Mock", 
+        "DP_Passthrough", 
+        "DP12_Passthrough", 
+        "DP14_Passthrough", 
+        "QuadDVI", 
+        "QuadSDI", 
+        "HDMI", 
+        "IP", 
+        "NoVFC"
+      ], 
+      "default": "VFCType_Unknown"
+    }
+  }, 
+  "basePath": "/api/service"
+}

@@ -1,11 +1,16 @@
 // Package mcpserver builds the Model Context Protocol server that exposes the
-// disguise Designer API as tools.
+// disguise Designer API as tools. Most tools are generated directly from the
+// embedded OpenAPI specs so coverage tracks the API; a few control tools
+// (status, set-target, raw) are hand-written.
 package mcpserver
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/medcelerate/disguise-mcp/internal/app"
+	"github.com/medcelerate/disguise-mcp/internal/config"
+	"github.com/medcelerate/disguise-mcp/internal/disguise"
 	"github.com/medcelerate/disguise-mcp/internal/version"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -15,8 +20,10 @@ type deps struct {
 	app *app.App
 }
 
-// New builds an MCP server with disguise control and transport tools.
-func New(a *app.App) *mcp.Server {
+// New builds an MCP server with control tools plus a tool per disguise API
+// operation. cfg.Disguise.Sections, if set, restricts which API sections
+// (tags) are exposed. Returns the server and the number of generated tools.
+func New(a *app.App, cfg *config.Config) (*mcp.Server, int, error) {
 	s := mcp.NewServer(&mcp.Implementation{
 		Name:    "disguise-mcp",
 		Version: version.Version,
@@ -24,8 +31,17 @@ func New(a *app.App) *mcp.Server {
 
 	d := &deps{app: a}
 	registerControlTools(s, d)
-	registerTransportTools(s, d)
-	return s
+
+	ops, err := disguise.LoadOperations()
+	if err != nil {
+		return nil, 0, err
+	}
+	enabled := map[string]bool{}
+	for _, t := range cfg.Disguise.Sections {
+		enabled[strings.ToLower(t)] = true
+	}
+	n := registerGeneratedTools(s, d, ops, enabled)
+	return s, n, nil
 }
 
 // jsonResult builds a tool result: a text summary plus the raw disguise JSON,

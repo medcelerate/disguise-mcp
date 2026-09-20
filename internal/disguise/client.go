@@ -133,9 +133,9 @@ func (c *Client) Post(ctx context.Context, path string, body any) (json.RawMessa
 	return c.Do(ctx, http.MethodPost, path, body)
 }
 
-// Ping checks reachability by requesting the system endpoint. It returns nil if
-// the disguise server responds successfully.
+// Ping checks reachability by requesting a lightweight Service endpoint (OS
+// info, always available). It returns nil if the disguise server responds.
 func (c *Client) Ping(ctx context.Context) error {
-	_, err := c.Get(ctx, "/api/service/system")
+	_, err := c.Get(ctx, "/api/service/system/osinfo")
 	return err
 }

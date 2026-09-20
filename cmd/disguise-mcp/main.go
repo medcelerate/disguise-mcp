@@ -64,7 +64,11 @@ func run(cfgPath string, logf func(string, ...any)) error {
 		}()
 	}
 
-	mcpSrv := mcpserver.New(a)
+	mcpSrv, toolCount, err := mcpserver.New(a, cfg)
+	if err != nil {
+		return fmt.Errorf("build mcp server: %w", err)
+	}
+	logf("registered %d disguise API tools", toolCount)
 
 	switch cfg.MCP.Transport {
 	case config.TransportStdio:
