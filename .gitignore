@@ -3,6 +3,10 @@
 /dist/
 /build/
 *.exe
+*.mcpb
+
+# Downloaded build tools (Tailwind CLI, etc.)
+/.tools/
 
 # Local config (do not commit real deployment config)
 /config.yaml

@@ -1,0 +1,81 @@
+{
+  "manifest_version": "0.3",
+  "name": "disguise-mcp",
+  "display_name": "disguise Bridge",
+  "version": "0.1.0",
+  "description": "Control a disguise media server from Claude over the disguise Designer API: drive the timeline transport, sequencing, notes, media and every other API section.",
+  "long_description": "disguise-mcp bridges the disguise Designer API to the Model Context Protocol. It exposes the entire Designer API as tools (generated from disguise's OpenAPI specs) — transport/playback, sequencing, notes, colour, media, system and more — and can be repointed at any disguise server. Point the Host setting at your disguise machine's IP.",
+  "author": {
+    "name": "Evan Clark",
+    "url": "https://github.com/medcelerate/disguise-mcp"
+  },
+  "homepage": "https://github.com/medcelerate/disguise-mcp",
+  "documentation": "https://github.com/medcelerate/disguise-mcp/blob/main/README.md",
+  "support": "https://github.com/medcelerate/disguise-mcp/issues",
+  "license": "GPL-3.0",
+  "icon": "icon.png",
+  "keywords": ["disguise", "d3", "media-server", "broadcast", "show-control", "transport", "timeline"],
+  "privacy_policies": [
+    "https://github.com/medcelerate/disguise-mcp/blob/main/PRIVACY.md"
+  ],
+  "server": {
+    "type": "binary",
+    "entry_point": "server/disguise-mcp-darwin",
+    "mcp_config": {
+      "command": "${__dirname}/server/disguise-mcp-darwin",
+      "args": [],
+      "env": {
+        "DISGUISEMCP_CONFIG": "${user_config.config_path}",
+        "DISGUISEMCP_HOST": "${user_config.host}",
+        "DISGUISEMCP_PORT": "${user_config.port}",
+        "DISGUISEMCP_MCP_TRANSPORT": "stdio",
+        "DISGUISEMCP_WEB_ENABLED": "${user_config.web_enabled}"
+      },
+      "platform_overrides": {
+        "darwin": { "command": "${__dirname}/server/disguise-mcp-darwin" },
+        "linux": { "command": "${__dirname}/server/disguise-mcp-linux" },
+        "win32": { "command": "${__dirname}/server/disguise-mcp-win32.exe" }
+      }
+    }
+  },
+  "user_config": {
+    "host": {
+      "type": "string",
+      "title": "disguise server host",
+      "description": "Hostname or IP of the disguise server running the Designer API. Use 127.0.0.1 only if this bridge runs on the disguise machine itself.",
+      "default": "127.0.0.1",
+      "required": false
+    },
+    "port": {
+      "type": "number",
+      "title": "API port",
+      "description": "disguise Designer API port (default 80).",
+      "default": 80,
+      "required": false
+    },
+    "config_path": {
+      "type": "file",
+      "title": "Config file",
+      "description": "Optional path to a disguise-mcp YAML config file (overrides host/port and sets enabled API sections).",
+      "required": false
+    },
+    "web_enabled": {
+      "type": "boolean",
+      "title": "Enable admin console",
+      "description": "Serve the admin console (default on 0.0.0.0:8091) for viewing status and repointing the disguise target.",
+      "default": true,
+      "required": false
+    }
+  },
+  "tools_generated": true,
+  "tools": [
+    { "name": "disguise_status", "description": "Show which disguise server is targeted and whether it is reachable." },
+    { "name": "disguise_set_target", "description": "Repoint the bridge at a different disguise server." },
+    { "name": "disguise_transport_play", "description": "Play a transport (timeline)." },
+    { "name": "disguise_transport_stop", "description": "Stop a transport." },
+    { "name": "disguise_raw", "description": "Call any disguise Designer API endpoint directly." }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"]
+  }
+}

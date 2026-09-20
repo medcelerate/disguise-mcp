@@ -141,12 +141,45 @@ the local machine.
 
 ---
 
+## Use it as a connector
+
+The bridge speaks MCP, so it plugs into AI clients as a connector. All tools
+carry titles and read-only / write annotations.
+
+### Claude Desktop extension
+
+Build a one-click `.mcpb` bundle and open it in Claude Desktop
+(**Settings → Extensions**, or double-click it):
+
+```bash
+sh scripts/build-mcpb.sh          # dist/disguise-mcp-<version>-universal.mcpb
+```
+
+One bundle runs on macOS (Intel + Apple Silicon), Windows, and Linux. Claude
+runs the bundled binary over stdio; set the **disguise server host/port** in the
+extension's settings. Pre-built bundles are attached to each
+[release](https://github.com/medcelerate/disguise-mcp/releases).
+
+### Remote connector (Claude custom connector / ChatGPT)
+
+Both Claude (custom connectors) and OpenAI (ChatGPT connectors and the Responses
+API's `tools: [{ "type": "mcp" }]`) can add a **remote** MCP server over
+Streamable HTTP. Run with `mcp.transport: http` and point the client at
+`http://<host>:8090`. Put it behind TLS + auth if exposed beyond a trusted
+network.
+
 ## Building from source
 
 ```bash
 go build ./...   # compile
 go test ./...    # run the tests
 ```
+
+## Privacy Policy
+
+`disguise-mcp` runs on your own infrastructure and talks only to the disguise
+server you configure. It sends no data to the author, Anthropic, OpenAI, or any
+third party, and includes no telemetry. See [PRIVACY.md](PRIVACY.md).
 
 ## License
 
