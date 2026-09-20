@@ -1,0 +1,29 @@
+# disguise-mcp configuration.
+# Copy to config.yaml and edit. All fields have defaults; the admin console
+# reads and writes this file. Selected values can be overridden with
+# DISGUISEMCP_* environment variables (see README).
+
+# The disguise server's Designer API. The API defaults to port 80.
+disguise:
+  scheme: http
+  host: 127.0.0.1     # the disguise server; 127.0.0.1 if the bridge runs on it
+  port: 80
+  timeoutSeconds: 15
+
+# How AI clients connect to the MCP side. transport: http | stdio | both.
+# HTTP is exposed on all interfaces by default so networked clients can reach
+# the bridge running on the disguise server.
+mcp:
+  transport: http
+  http:
+    addr: 0.0.0.0:8090
+
+# Admin console for viewing status and repointing the disguise target. Runs on
+# a separate port. Bind to 127.0.0.1 instead of 0.0.0.0 to restrict it to the
+# local machine.
+web:
+  enabled: true
+  addr: 0.0.0.0:8091
+
+log:
+  level: info

@@ -1,0 +1,14 @@
+# Binaries and build output
+/disguise-mcp
+/dist/
+/build/
+*.exe
+
+# Local config (do not commit real deployment config)
+/config.yaml
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/

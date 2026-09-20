@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>disguise-mcp Console</title>
+<style>
+  :root {
+    --bg:#f6f7f9; --panel:#fff; --border:#d8dce3; --text:#1c2330; --muted:#667085;
+    --accent:#2f6fed; --accent-fg:#fff; --ok:#1a7f47; --err:#c02636; --code-bg:#f0f2f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f1419; --panel:#171d26; --border:#2a323e; --text:#e6eaf0; --muted:#9aa5b4;
+      --accent:#4d86f7; --ok:#4ec27f; --err:#f2647a; --code-bg:#0c1116; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:16px 20px; border-bottom:1px solid var(--border); background:var(--panel); display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  header h1 { font-size:18px; margin:0; }
+  header .sub { color:var(--muted); font-size:13px; }
+  main { max-width:760px; margin:0 auto; padding:20px; display:grid; gap:20px; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; }
+  .card h2 { font-size:15px; margin:0 0 12px; }
+  .row { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; align-items:end; }
+  label { display:block; font-size:12px; color:var(--muted); margin-bottom:3px; }
+  input, select { width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font:inherit; }
+  button { padding:8px 14px; border:1px solid var(--border); border-radius:6px; background:var(--panel); color:var(--text); font:inherit; cursor:pointer; }
+  button.primary { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); }
+  button:hover { filter:brightness(1.06); }
+  .status { display:flex; align-items:center; gap:8px; font-size:14px; }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .dot.ok { background:var(--ok); } .dot.bad { background:var(--err); }
+  .muted { color:var(--muted); }
+  code { background:var(--code-bg); padding:1px 6px; border-radius:4px; }
+  .msg { margin-top:10px; padding:8px 10px; border-radius:6px; font-size:13px; display:none; }
+  .msg.ok { background:color-mix(in srgb,var(--ok) 15%,transparent); color:var(--ok); display:block; }
+  .msg.err { background:color-mix(in srgb,var(--err) 15%,transparent); color:var(--err); display:block; }
+  .kv { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:13px; }
+  .kv div:nth-child(odd){ color:var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>disguise-mcp Console</h1>
+  <span class="sub">MOS-style control bridge for the disguise Designer API</span>
+</header>
+<main>
+  <section class="card">
+    <h2>Status</h2>
+    <div class="status"><span id="dot" class="dot bad"></span><span id="statusText">Checking…</span></div>
+    <div class="kv" style="margin-top:12px">
+      <div>disguise target</div><div><code id="target">—</code></div>
+      <div>MCP endpoint</div><div><code id="mcp">—</code></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Repoint disguise server</h2>
+    <p class="muted" style="margin-top:0">Aim the bridge at a different disguise server. Changes apply immediately and are saved to the config.</p>
+    <form id="form" class="row" onsubmit="return apply(event)">
+      <div style="grid-column:span 2"><label>Host / IP</label><input name="host" required placeholder="10.0.0.20" /></div>
+      <div><label>Port</label><input name="port" type="number" placeholder="80" /></div>
+      <div><label>Scheme</label>
+        <select name="scheme"><option value="http">http</option><option value="https">https</option></select>
+      </div>
+      <div><button type="submit" class="primary">Apply &amp; test</button></div>
+    </form>
+    <div id="msg" class="msg"></div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || res.statusText);
+  return body;
+}
+function flash(ok, text){ const m=$("msg"); m.className="msg "+(ok?"ok":"err"); m.textContent=text; }
+function renderStatus(st){
+  $("dot").className = "dot " + (st.reachable ? "ok" : "bad");
+  $("statusText").textContent = st.reachable ? "Connected to disguise" : ("Not reachable" + (st.error?": "+st.error:""));
+  $("target").textContent = st.baseURL || "—";
+  const t = st.target || {};
+  if (!$("form").host.value) $("form").host.value = t.host || "";
+  if (!$("form").port.value && t.port) $("form").port.value = t.port;
+  if (t.scheme) $("form").scheme.value = t.scheme;
+}
+async function refresh(){
+  try { renderStatus(await api("/api/status")); }
+  catch(e){ $("statusText").textContent = e.message; }
+}
+async function apply(ev){
+  ev.preventDefault();
+  const f = $("form");
+  const payload = { host:f.host.value.trim(), port:f.port.value?parseInt(f.port.value,10):0, scheme:f.scheme.value };
+  flash(true, "Applying…");
+  try {
+    const st = await api("/api/target", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
+    renderStatus(st);
+    flash(st.reachable, st.reachable ? ("Connected to "+st.baseURL) : ("Set to "+st.baseURL+" but not reachable"+(st.error?": "+st.error:"")));
+  } catch(e){ flash(false, e.message); }
+  return false;
+}
+$("mcp").textContent = location.hostname + " (MCP on its own port — see config)";
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

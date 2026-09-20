@@ -1,0 +1,66 @@
+# GoReleaser configuration. See https://goreleaser.com
+# Validate:  goreleaser check
+# Local snapshot:  goreleaser release --snapshot --clean
+version: 2
+
+project_name: disguise-mcp
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: disguise-mcp
+    main: ./cmd/disguise-mcp
+    binary: disguise-mcp
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/medcelerate/disguise-mcp/internal/version.Version={{ .Version }}
+      - -X github.com/medcelerate/disguise-mcp/internal/version.Commit={{ .ShortCommit }}
+      - -X github.com/medcelerate/disguise-mcp/internal/version.Date={{ .Date }}
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    files:
+      - README.md
+      - LICENSE
+      - config.example.yaml
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-snapshot"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+release:
+  github:
+    owner: medcelerate
+    name: disguise-mcp
+  draft: false
+  prerelease: auto
+  name_template: "v{{ .Version }}"
