@@ -31,7 +31,10 @@ func New(a *app.App, cfg *config.Config) (*mcp.Server, int, error) {
 	}, &mcp.ServerOptions{
 		// Advertise the resources capability (with subscribe support) so clients
 		// can subscribe to live-update resources for pushed change notifications.
-		HasResources:       true,
+		// Tools/prompts capabilities are still inferred from what's registered.
+		Capabilities: &mcp.ServerCapabilities{
+			Resources: &mcp.ResourceCapabilities{Subscribe: true, ListChanged: true},
+		},
 		SubscribeHandler:   func(context.Context, *mcp.SubscribeRequest) error { return nil },
 		UnsubscribeHandler: func(context.Context, *mcp.UnsubscribeRequest) error { return nil },
 	})
