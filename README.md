@@ -121,6 +121,24 @@ parameters/body, and is annotated read-only (GET) or write/destructive.
 Plus three hand-written control tools: `disguise_status` (target + reachability),
 `disguise_set_target` (repoint), and `disguise_raw` (call any endpoint directly).
 
+### Live Update (real-time)
+
+The disguise **Live Update** WebSocket API (`/api/session/liveupdate`) is also
+bridged, for real-time property monitoring and control:
+
+- `disguise_live_subscribe` — subscribe to an object's properties (object in
+  Designer expression syntax, e.g. `track:track_1`; properties in Python syntax,
+  e.g. `object.lengthInBeats`).
+- `disguise_live_get` / `disguise_live_list` — read the latest cached values.
+- `disguise_live_set` — write property values live (undoable on the Director).
+- `disguise_live_unsubscribe` — drop subscriptions.
+
+Each subscription is also published as an **MCP resource**
+(`disguise-live:///sub/<id>`), and the server sends `resources/updated`
+notifications when values change — so MCP clients that support resource
+subscriptions get pushed updates. A `disguise-live:///subscriptions` index
+resource lists everything currently subscribed.
+
 To reduce the tool count, restrict `disguise.sections` in the config to just the
 sections you use (see `config.example.yaml`).
 

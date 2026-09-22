@@ -5,6 +5,7 @@
 package mcpserver
 
 import (
+	"context"
 	"encoding/json"
 	"strings"
 
@@ -27,10 +28,17 @@ func New(a *app.App, cfg *config.Config) (*mcp.Server, int, error) {
 	s := mcp.NewServer(&mcp.Implementation{
 		Name:    "disguise-mcp",
 		Version: version.Version,
-	}, nil)
+	}, &mcp.ServerOptions{
+		// Advertise the resources capability (with subscribe support) so clients
+		// can subscribe to live-update resources for pushed change notifications.
+		HasResources:       true,
+		SubscribeHandler:   func(context.Context, *mcp.SubscribeRequest) error { return nil },
+		UnsubscribeHandler: func(context.Context, *mcp.UnsubscribeRequest) error { return nil },
+	})
 
 	d := &deps{app: a}
 	registerControlTools(s, d)
+	registerLiveTools(s, d)
 
 	ops, err := disguise.LoadOperations()
 	if err != nil {
@@ -57,6 +65,11 @@ func jsonResult(summary string, raw json.RawMessage) (*mcp.CallToolResult, any, 
 		_ = json.Unmarshal(raw, &v)
 	}
 	return res, v, nil
+}
+
+// textResult wraps a human-readable summary as tool content.
+func textResult(summary string) *mcp.CallToolResult {
+	return &mcp.CallToolResult{Content: []mcp.Content{&mcp.TextContent{Text: summary}}}
 }
 
 func boolPtr(b bool) *bool { return &b }
